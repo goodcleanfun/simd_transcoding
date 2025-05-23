@@ -1,0 +1,19 @@
+{
+    "name": "utf_transcoding",
+    "version": "0.0.0",
+    "repo": "goodcleanfun/utf_transcoding",
+    "description": "Transcoding UTF-8/Latin-1/UTF-16/UTF-32 with SIMDe AVX2 functions",
+    "keywords": [],
+    "license": "MIT",
+    "development": {
+      "silentbicycle/greatest": "*",
+      "goodcleanfun/aligned": "*"
+    },
+    "dependencies": {
+      "goodcleanfun/simde_avx2": "*"
+    },
+    "src": [
+      "src/utf16_to_utf8_tables.h",
+      "src/latin1_to_utf8.h"
+    ]
+  }
