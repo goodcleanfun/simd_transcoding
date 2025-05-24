@@ -17,24 +17,30 @@ TEST test_latin1_to_utf8(void) {
     size_t utf8_output_len = len + 1;
     char *utf8_output = aligned_malloc(utf8_output_len, 32);
 
-    size_t converted = convert_latin1_to_utf8(data, len, utf8_output, utf8_output_len);
-    ASSERT_EQ(converted, len);
+    utf_result_t converted = convert_latin1_to_utf8(data, len, utf8_output, utf8_output_len);
+    ASSERT_EQ(converted.return_code, SIMDUTF_SUCCESS);
+    ASSERT_EQ(converted.read_len, len);
+    ASSERT_EQ(converted.written_len, utf8_output_len);
     ASSERT(strncmp(utf8_output, "Tony! Toni! Toné!", utf8_output_len) == 0);
 
     const char *data_str_long = (char *)"Tony! Toni! Ton\xe9! Tony! Toni! Ton\xe9! Tony! Toni! Ton\xe9! Tony! Toni! Ton\xe9!";
-    size_t len_long = strlen((const char *)data_str_long);
+    size_t len_long = strlen(data_str_long);
     char *data_long = aligned_malloc(len_long, 32);
     memcpy(data_long, data_str_long, len_long);
 
-    size_t utf8_output_len_long = len_long + 1;
+    size_t utf8_output_len_long = len_long + 4;
     char *utf8_output_long = aligned_malloc(utf8_output_len_long, 32);
 
-    size_t converted_long = convert_latin1_to_utf8(data_long, len_long, utf8_output_long, utf8_output_len_long);
-    ASSERT_EQ(converted_long, len_long);
+    utf_result_t converted_long = convert_latin1_to_utf8(data_long, len_long, utf8_output_long, utf8_output_len_long);
+    ASSERT_EQ(converted_long.return_code, SIMDUTF_SUCCESS);
+    ASSERT_EQ(converted_long.read_len, len_long);
+    ASSERT_EQ(converted_long.written_len, utf8_output_len_long);
     ASSERT(strncmp(utf8_output_long, "Tony! Toni! Toné! Tony! Toni! Toné! Tony! Toni! Toné! Tony! Toni! Toné!", utf8_output_len_long) == 0);
 
-    size_t converted_too_short = convert_latin1_to_utf8(data_long, len_long, utf8_output, utf8_output_len);
-    ASSERT_EQ(converted_too_short, len);
+    utf_result_t converted_too_short = convert_latin1_to_utf8(data_long, len_long, utf8_output, utf8_output_len);
+    ASSERT_EQ(converted_too_short.return_code, SIMDUTF_SUCCESS);
+    ASSERT_EQ(converted_too_short.read_len, len);
+    ASSERT_EQ(converted_too_short.written_len, utf8_output_len);
     ASSERT(strncmp(utf8_output, "Tony! Toni! Toné!", utf8_output_len) == 0);
 
     aligned_free(data_long);
@@ -45,6 +51,26 @@ TEST test_latin1_to_utf8(void) {
 
     PASS();
 }
+
+/*
+int strlen16(const char16_t* strarg)
+{
+   if(!strarg)
+     return -1; //strarg is NULL pointer
+   char16_t* str = strarg;
+   for(;*str;++str)
+     ; // empty body
+   return str-strarg;
+}
+
+TEST test_utf16be_to_utf8(void) {
+    const char16_t *data_str = u"Tony! Toni! Toné!";
+    size_t len = strlen((const char *)data_str);
+    char *data = aligned_malloc(len, 32);
+    memcpy(data, data_str, len);
+    size_t utf8_output_len = len + 1;
+    char *utf8_output = aligned_malloc(utf8_output_len, 32);
+}*/
 
 
 /* Add definitions that need to be in the test runner's main file. */
