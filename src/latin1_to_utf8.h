@@ -53,7 +53,7 @@ static inline utf_result_t convert_latin1_to_utf8_scalar(const char *latin1_inpu
                 return (utf_result_t){
                     .read_len = pos,
                     .written_len = utf8_pos,
-                    .return_code = OUTPUT_BUFFER_TOO_SMALL
+                    .return_code = SIMDUTF_OUTPUT_BUFFER_TOO_SMALL
                 };
             }
         }
@@ -62,7 +62,7 @@ static inline utf_result_t convert_latin1_to_utf8_scalar(const char *latin1_inpu
     return (utf_result_t){
         .read_len = pos,
         .written_len = utf8_pos,
-        .return_code = SUCCESS
+        .return_code = SIMDUTF_SUCCESS
     };
 }
 
@@ -152,10 +152,18 @@ utf_result_t convert_latin1_to_utf8(const char *latin1_input, size_t len,
 
     size_t remaining_len = end - latin1_input;
     size_t remaining_utf8_len = utf8_len - output_len;
-    utf_result_t scalar_result = convert_latin1_to_utf8_scalar(latin1_input, remaining_len, utf8_output, remaining_utf8_len);
+    if (remaining_len > 0) {
+        utf_result_t scalar_result = convert_latin1_to_utf8_scalar(latin1_input, remaining_len, utf8_output, remaining_utf8_len);
+        return (utf_result_t){
+            .read_len = read_len + scalar_result.read_len,
+            .written_len = output_len + scalar_result.written_len,
+            .return_code = scalar_result.return_code
+        };
+    }
     return (utf_result_t){
-        .read_len = read_len + scalar_result.read_len,
-        .written_len = output_len + scalar_result.written_len
+        .read_len = read_len,
+        .written_len = output_len,
+        .return_code = SIMDUTF_SUCCESS
     };
 }
 
