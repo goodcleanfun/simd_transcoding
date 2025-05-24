@@ -14,6 +14,7 @@
     },
     "src": [
       "src/utf16_to_utf8_tables.h",
-      "src/latin1_to_utf8.h"
+      "src/latin1_to_utf8.h",
+      "src/result.h"
     ]
   }
