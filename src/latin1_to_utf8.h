@@ -6,9 +6,10 @@
 
 #include "simde_avx2/avx2.h"
 #include "utf16_to_utf8_tables.h"
+#include "result.h"
 
-static inline size_t convert_latin1_to_utf8_scalar(const char *latin1_input, size_t len,
-                              char *utf8_output, size_t utf8_len) {
+static inline utf_result_t convert_latin1_to_utf8_scalar(const char *latin1_input, size_t len,
+                                                         char *utf8_output, size_t utf8_len) {
     const unsigned char *data = (const unsigned char *)latin1_input;
     size_t output_len = 0;
     size_t pos = 0;
@@ -29,6 +30,7 @@ static inline size_t convert_latin1_to_utf8_scalar(const char *latin1_input, siz
             if ((v & 0x8080808080808080) == 0) {
                 // if *none of these are set, e.g. all of them are zero,
                 // then everything is ASCII
+                memcpy(utf8_output + utf8_pos, data + pos, 16);
                 utf8_pos += 16;
                 pos += 16;
             } else {
@@ -48,21 +50,31 @@ static inline size_t convert_latin1_to_utf8_scalar(const char *latin1_input, siz
                 utf8_output[utf8_pos++] = (char)((byte & 0b111111) | 0b10000000);
                 pos++;
             } else {
-                break;
+                return (utf_result_t){
+                    .read_len = pos,
+                    .written_len = utf8_pos,
+                    .return_code = OUTPUT_BUFFER_TOO_SMALL
+                };
             }
         }
     }
-    return pos;
+
+    return (utf_result_t){
+        .read_len = pos,
+        .written_len = utf8_pos,
+        .return_code = SUCCESS
+    };
 }
 
-size_t convert_latin1_to_utf8(const char *latin1_input, size_t len,
-                              char *utf8_output, size_t utf8_len) {
+utf_result_t convert_latin1_to_utf8(const char *latin1_input, size_t len,
+                                    char *utf8_output, size_t utf8_len) {
     const char *end = latin1_input + len;
     const simde__m256i v_0000 = simde_mm256_setzero_si256();
     const simde__m256i v_c080 = simde_mm256_set1_epi16((int16_t)0xc080);
     const simde__m256i v_ff80 = simde_mm256_set1_epi16((int16_t)0xff80);
     const size_t safety_margin = 12;
 
+    size_t read_len = 0;
     size_t output_len = 0;
 
     while (end - latin1_input >= (ptrdiff_t)(16 + safety_margin) && utf8_len >= (output_len + 16 + safety_margin)) {
@@ -75,6 +87,7 @@ size_t convert_latin1_to_utf8(const char *latin1_input, size_t len,
           // 2. adjust pointers
           latin1_input += 16;
           utf8_output += 16;
+          read_len += 16;
           output_len += 16;
           continue; // we are done for this round!
       }
@@ -131,6 +144,7 @@ size_t convert_latin1_to_utf8(const char *latin1_input, size_t len,
       utf8_output += row_2[0];
       // 6. adjust pointers
       latin1_input += 16;
+      read_len += 16;
       output_len += row[0] + row_2[0];
       continue;
 
@@ -138,8 +152,11 @@ size_t convert_latin1_to_utf8(const char *latin1_input, size_t len,
 
     size_t remaining_len = end - latin1_input;
     size_t remaining_utf8_len = utf8_len - output_len;
-    size_t remaining_converted = convert_latin1_to_utf8_scalar(latin1_input, remaining_len, utf8_output, remaining_utf8_len);
-    return output_len + remaining_converted;
+    utf_result_t scalar_result = convert_latin1_to_utf8_scalar(latin1_input, remaining_len, utf8_output, remaining_utf8_len);
+    return (utf_result_t){
+        .read_len = read_len + scalar_result.read_len,
+        .written_len = output_len + scalar_result.written_len
+    };
 }
 
 #endif
