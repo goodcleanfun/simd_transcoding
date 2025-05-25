@@ -11,7 +11,7 @@
 static inline utf_result_t convert_latin1_to_utf8_scalar(const char *latin1_input, size_t len,
                                                          char *utf8_output, size_t utf8_len) {
     const unsigned char *data = (const unsigned char *)latin1_input;
-    size_t output_len = 0;
+    size_t output_pos = 0;
     size_t pos = 0;
     size_t skip_pos = 0;
     size_t utf8_pos = 0;
@@ -75,9 +75,9 @@ utf_result_t convert_latin1_to_utf8(const char *latin1_input, size_t len,
     const size_t safety_margin = 12;
 
     size_t read_len = 0;
-    size_t output_len = 0;
+    size_t output_pos = 0;
 
-    while (end - latin1_input >= (ptrdiff_t)(16 + safety_margin) && utf8_len >= (output_len + 16 + safety_margin)) {
+    while (end - latin1_input >= (ptrdiff_t)(16 + safety_margin) && utf8_len >= (output_pos + 16 + safety_margin)) {
       simde__m128i in8 = simde_mm_loadu_si128((simde__m128i *)latin1_input);
       // a single 16-bit UTF-16 word can yield 1, 2 or 3 UTF-8 bytes
       const simde__m128i v_80 = simde_mm_set1_epi8((char)0x80);
@@ -88,7 +88,7 @@ utf_result_t convert_latin1_to_utf8(const char *latin1_input, size_t len,
           latin1_input += 16;
           utf8_output += 16;
           read_len += 16;
-          output_len += 16;
+          output_pos += 16;
           continue; // we are done for this round!
       }
       // We proceed only with the first 16 bytes.
@@ -145,24 +145,24 @@ utf_result_t convert_latin1_to_utf8(const char *latin1_input, size_t len,
       // 6. adjust pointers
       latin1_input += 16;
       read_len += 16;
-      output_len += row[0] + row_2[0];
+      output_pos += row[0] + row_2[0];
       continue;
 
     } // while
 
     size_t remaining_len = end - latin1_input;
-    size_t remaining_utf8_len = utf8_len - output_len;
+    size_t remaining_utf8_len = utf8_len - output_pos;
     if (remaining_len > 0) {
         utf_result_t scalar_result = convert_latin1_to_utf8_scalar(latin1_input, remaining_len, utf8_output, remaining_utf8_len);
         return (utf_result_t){
             .read_len = read_len + scalar_result.read_len,
-            .written_len = output_len + scalar_result.written_len,
+            .written_len = output_pos + scalar_result.written_len,
             .return_code = scalar_result.return_code
         };
     }
     return (utf_result_t){
         .read_len = read_len,
-        .written_len = output_len,
+        .written_len = output_pos,
         .return_code = SIMDUTF_SUCCESS
     };
 }
