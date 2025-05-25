@@ -781,6 +781,7 @@ static inline utf_result_t convert_valid_utf8_to_utf32_scalar(const char *input,
         if (leading_byte < 0b10000000) {
             // converting one ASCII byte !!!
             *utf32_output++ = (uint_least32_t)leading_byte;
+            output_pos++;
             pos++;
         } else if ((leading_byte & 0b11100000) == 0b11000000) {
             // We have a two-byte UTF-8
@@ -901,6 +902,7 @@ utf_result_t convert_valid_utf8_to_utf32(const char *input, size_t len,
     }
 
     utf_result_t res = convert_valid_utf8_to_utf32_scalar(input + pos, len - pos, utf32_output, output_len - output_pos);
+
     return (utf_result_t) {
         .read_len = pos + res.read_len,
         .written_len = output_pos + res.written_len,
