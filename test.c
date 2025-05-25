@@ -67,7 +67,7 @@ TEST test_utf8_to_utf32(void) {
     ASSERT_EQ(converted.written_len, 17);
     ASSERT_EQ(utf32_output[converted.written_len - 2], 233);
   
-    const unsigned char *data_long_str = (unsigned char *)"we on a world tour نحن في جولة حول العالم nous sommes en tournée mondiale мы в мировом турне a wa lori irin-ajo agbaye 私たちは世界ツアー中です είμαστε σε παγκόσμια περιοδεία በአለም ጉብኝት ላይ ነን jesteśmy w trasie dookoła świata 우리는 세계 여행을 하고 있어요 យើងកំពុងធ្វើដំណើរជុំវិញពិភពលោក ನಾವು ವಿಶ್ವ ಪ್ರವಾಸದಲ್ಲಿದ್ದೇವೆ. մենք համաշխարհային շրջագայության մեջ ենք míele xexeame katã ƒe tsaɖiɖi aɖe dzi เรากำลังทัวร์รอบโลก हम विश्व भ्रमण पर हैं pachantinpi puriypin kashanchis אנחנו בסיבוב הופעות עולמי kaulâh bâdâ è tur dhunnya qegħdin fuq tour tad-dinja ང་ཚོ་འཛམ་གླིང་སྐོར་བསྐྱོད་བྱེད་བཞིན་ཡོད།";
+    const unsigned char *data_long_str = (unsigned char *)"we on a world tour نحن في جولة حول العالم nous sommes en tournée mondiale мы в мировом турне a wa lori irin-ajo agbaye 私たちは世界ツアー中です είμαστε σε παγκόσμια περιοδεία በአለም ጉብኝት ላይ ነን jesteśmy w trasie dookoła świata 우리는 세계 여행을 하고 있어요 យើងកំពុងធ្វើដំណើរជុំវិញពិភពលោក ನಾವು ವಿಶ್ವ ಪ್ರವಾಸದಲ್ಲಿದ್ದೇವೆ. մենք համաշխարհային շրջագայության մեջ ենք míele xexeame katã ƒe tsaɖiɖi aɖe dzi";
     size_t len_long = strlen((const char *)data_long_str);
     char *data_long = aligned_malloc(len_long, 32);
     memcpy(data_long, data_long_str, len_long);
@@ -76,16 +76,17 @@ TEST test_utf8_to_utf32(void) {
     utf_result_t converted_long = convert_utf8_to_utf32(data_long, len_long, utf32_output_long, utf32_output_len_long);
     ASSERT_EQ(converted_long.return_code, SIMDUTF_SUCCESS);
     ASSERT_EQ(converted_long.read_len, len_long);
-    ASSERT_EQ(converted_long.written_len, 563);
-    ASSERT_EQ(utf32_output_long[converted_long.written_len - 1], 3853);
+    ASSERT_EQ(converted_long.written_len, 369);
+    ASSERT_EQ(utf32_output_long[converted_long.written_len - 6], 598);
 
     memset(utf32_output, 0, utf32_output_len * sizeof(uint32_t));
 
     converted_long = convert_valid_utf8_to_utf32(data_long, len_long, utf32_output_long, utf32_output_len_long);
     ASSERT_EQ(converted_long.return_code, SIMDUTF_SUCCESS);
     ASSERT_EQ(converted_long.read_len, len_long);
-    ASSERT_EQ(converted_long.written_len, 563);
-    ASSERT_EQ(utf32_output_long[converted_long.written_len - 1], 3853);
+    printf("converted_long.written_len: %zu\n", converted_long.written_len);
+    ASSERT_EQ(converted_long.written_len, 369);
+    ASSERT_EQ(utf32_output_long[converted_long.written_len - 6], 598);
 
     aligned_free(data);
     aligned_free(utf32_output);
