@@ -69,7 +69,7 @@ TEST test_utf8_to_utf32(void) {
 
     printf("Did first utf8_to_utf32 test\n");
   
-    const unsigned char *data_long_str = (unsigned char *)"we on a world tour nous sommes en tournée mondiale vi er på verdensturné";
+    const unsigned char *data_long_str = (unsigned char *)u8"we on a world tour nous sommes en tournée mondiale vi er på verdensturné";
     size_t len_long = strlen((const char *)data_long_str);
     char *data_long = aligned_malloc(len_long, 32);
     memcpy(data_long, data_long_str, len_long);
