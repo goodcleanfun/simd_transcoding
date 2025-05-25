@@ -13,8 +13,9 @@
       "goodcleanfun/simde_avx2": "*"
     },
     "src": [
-      "src/utf16_to_utf8_tables.h",
       "src/latin1_to_utf8.h",
-      "src/result.h"
+      "src/result.h",
+      "src/utf16_to_utf8_tables.h",
+      "src/utf8_to_utf32.h"
     ]
   }
