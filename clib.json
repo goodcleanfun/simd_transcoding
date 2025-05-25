@@ -1,7 +1,7 @@
 {
-    "name": "simdutf",
+    "name": "simd_transcoding",
     "version": "0.0.0",
-    "repo": "goodcleanfun/simdutf",
+    "repo": "goodcleanfun/simd_transcoding",
     "description": "Transcoding UTF-8/Latin-1/UTF-16/UTF-32 with SIMDe AVX2 functions",
     "keywords": ["utf-8", "utf-16", "utf-32", "latin-1", "simd", "simde", "avx2"],
     "license": "MIT",
