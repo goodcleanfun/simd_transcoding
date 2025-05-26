@@ -69,7 +69,7 @@ TEST test_utf8_to_utf32(void) {
 
     printf("Did first utf8_to_utf32 test\n");
   
-    const unsigned char *data_long_str = (unsigned char *)u8"we on a world tour nous sommes en tournée mondiale vi er på verdensturné";
+    const unsigned char *data_long_str = (unsigned char *)"we on a world tour we on a world tour we on a world tour we on a world tour we on a world tour we on a world tour we on a world tour we on a world tour we on a world tour we on a world tour we on a world tour nous sommes en tournée mondiale";
     size_t len_long = strlen((const char *)data_long_str);
     char *data_long = aligned_malloc(len_long, 32);
     memcpy(data_long, data_long_str, len_long);
@@ -78,16 +78,16 @@ TEST test_utf8_to_utf32(void) {
     utf_result_t converted_long = convert_utf8_to_utf32(data_long, len_long, utf32_output_long, utf32_output_len_long);
     ASSERT_EQ(converted_long.return_code, SIMDUTF_SUCCESS);
     ASSERT_EQ(converted_long.read_len, len_long);
-    ASSERT_EQ(converted_long.written_len, 72);
-    ASSERT_EQ(utf32_output_long[converted_long.written_len - 14], 229);
+    ASSERT_EQ(converted_long.written_len, 240);
+    ASSERT_EQ(utf32_output_long[converted_long.written_len - 14], 233);
 
     memset(utf32_output, 0, utf32_output_len * sizeof(uint32_t));
 
     converted_long = convert_valid_utf8_to_utf32(data_long, len_long, utf32_output_long, utf32_output_len_long);
     ASSERT_EQ(converted_long.return_code, SIMDUTF_SUCCESS);
     ASSERT_EQ(converted_long.read_len, len_long);
-    ASSERT_EQ(converted_long.written_len, 72);
-    ASSERT_EQ(utf32_output_long[converted_long.written_len - 14], 229);
+    ASSERT_EQ(converted_long.written_len, 240);
+    ASSERT_EQ(utf32_output_long[converted_long.written_len - 14], 233);
 
     aligned_free(data);
     aligned_free(utf32_output);
