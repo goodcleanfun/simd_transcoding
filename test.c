@@ -54,7 +54,7 @@ TEST test_latin1_to_utf8(void) {
 }
 
 TEST test_utf8_to_utf32(void) {
-    const char *data_str = (char *)"Tony! Toni! Toné!";
+    const char *data_str = (char *)"Tony! Toni! Toné! Tony! Toni! Toné! Tony! Toni! Toné! Tony! Toni! Toné! Tony! Toni! Toné! Tony! Toni! Toné! Tony! Toni! Toné!";
     size_t len = strlen((const char *)data_str);
     char *data = aligned_malloc(len, 32);
     memcpy(data, data_str, len);
@@ -64,7 +64,7 @@ TEST test_utf8_to_utf32(void) {
     utf_result_t converted = convert_utf8_to_utf32(data, len, utf32_output, utf32_output_len);
     ASSERT_EQ(converted.return_code, SIMDUTF_SUCCESS);
     ASSERT_EQ(converted.read_len, len);
-    ASSERT_EQ(converted.written_len, 17);
+    ASSERT_EQ(converted.written_len, 125);
     ASSERT_EQ(utf32_output[converted.written_len - 2], 233);
   
     aligned_free(data);
