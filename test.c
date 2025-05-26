@@ -79,7 +79,7 @@ TEST test_utf8_to_utf32(void) {
     ASSERT_EQ(converted_long.return_code, SIMDUTF_SUCCESS);
     ASSERT_EQ(converted_long.read_len, len_long);
     ASSERT_EQ(converted_long.written_len, 240);
-    ASSERT_EQ(utf32_output_long[converted_long.written_len - 14], 233);
+    ASSERT_EQ(utf32_output_long[converted_long.written_len - 11], 233);
 
     memset(utf32_output, 0, utf32_output_len * sizeof(uint32_t));
 
@@ -87,7 +87,7 @@ TEST test_utf8_to_utf32(void) {
     ASSERT_EQ(converted_long.return_code, SIMDUTF_SUCCESS);
     ASSERT_EQ(converted_long.read_len, len_long);
     ASSERT_EQ(converted_long.written_len, 240);
-    ASSERT_EQ(utf32_output_long[converted_long.written_len - 14], 233);
+    ASSERT_EQ(utf32_output_long[converted_long.written_len - 11], 233);
 
     aligned_free(data);
     aligned_free(utf32_output);
