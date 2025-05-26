@@ -54,7 +54,7 @@ TEST test_latin1_to_utf8(void) {
 }
 
 TEST test_utf8_to_utf32(void) {
-    const char *data_str = (char *)"Tony! Toni! Toné! Tony! Toni! Toné! Tony! Toni! Toné! Tony! Toni! Toné! Tony! Toni! Toné! Tony! Toni! Toné! Tony! Toni! Toné!";
+    const char *data_str = (char *)"Tony! Toni! Toné!";
     size_t len = strlen((const char *)data_str);
     char *data = aligned_malloc(len, 32);
     memcpy(data, data_str, len);
@@ -64,11 +64,33 @@ TEST test_utf8_to_utf32(void) {
     utf_result_t converted = convert_utf8_to_utf32(data, len, utf32_output, utf32_output_len);
     ASSERT_EQ(converted.return_code, SIMDUTF_SUCCESS);
     ASSERT_EQ(converted.read_len, len);
-    ASSERT_EQ(converted.written_len, 125);
+    ASSERT_EQ(converted.written_len, 17);
     ASSERT_EQ(utf32_output[converted.written_len - 2], 233);
   
+    const unsigned char *data_long_str = (unsigned char *)"we on a world tour نحن في جولة حول العالم nous sommes en tournée mondiale мы в мировом турне a wa lori irin-ajo agbaye 私たちは世界ツアー中です είμαστε σε παγκόσμια περιοδεία በአለም ጉብኝት ላይ ነን jesteśmy w trasie dookoła świata 우리는 세계 여행을 하고 있어요 យើងកំពុងធ្វើដំណើរជុំវិញពិភពលោក ನಾವು ವಿಶ್ವ ಪ್ರವಾಸದಲ್ಲಿದ್ದೇವೆ. մենք համաշխարհային շրջագայության մեջ ենք míele xexeame katã ƒe tsaɖiɖi aɖe dzi เรากำลังทัวร์รอบโลก हम विश्व भ्रमण पर हैं pachantinpi puriypin kashanchis אנחנו בסיבוב הופעות עולמי kaulâh bâdâ è tur dhunnya qegħdin fuq tour tad-dinja ང་ཚོ་འཛམ་གླིང་སྐོར་བསྐྱོད་བྱེད་བཞིན་ཡོད།";
+    size_t len_long = strlen((const char *)data_long_str);
+    char *data_long = aligned_malloc(len_long, 32);
+    memcpy(data_long, data_long_str, len_long);
+    size_t utf32_output_len_long = len_long;
+    uint32_t *utf32_output_long = aligned_malloc(utf32_output_len_long * sizeof(uint32_t), 32);
+    utf_result_t converted_long = convert_utf8_to_utf32(data_long, len_long, utf32_output_long, utf32_output_len_long);
+    ASSERT_EQ(converted_long.return_code, SIMDUTF_SUCCESS);
+    ASSERT_EQ(converted_long.read_len, len_long);
+    ASSERT_EQ(converted_long.written_len, 563);
+    ASSERT_EQ(utf32_output_long[converted_long.written_len - 1], 3853);
+
+    memset(utf32_output, 0, utf32_output_len * sizeof(uint32_t));
+
+    converted_long = convert_valid_utf8_to_utf32(data_long, len_long, utf32_output_long, utf32_output_len_long);
+    ASSERT_EQ(converted_long.return_code, SIMDUTF_SUCCESS);
+    ASSERT_EQ(converted_long.read_len, len_long);
+    ASSERT_EQ(converted_long.written_len, 563);
+    ASSERT_EQ(utf32_output_long[converted_long.written_len - 1], 3853);
+
     aligned_free(data);
     aligned_free(utf32_output);
+    aligned_free(data_long);
+    aligned_free(utf32_output_long);
 
     PASS();
 }

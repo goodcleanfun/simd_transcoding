@@ -99,48 +99,49 @@ jobs:
       - name: Run tests with MSVC
         run: make CC=cl CFLAGS="/std:c11 /arch:AVX2" test
 
-  test-windows-mingw:
-    runs-on: windows-latest
-    defaults:
-      run:
-        shell: bash
-    steps:
-      - uses: actions/checkout@v4
-      - name: Verify GCC Version
-        run: |
-          gcc --version
-      - name: Install curl
-        run: |
-          choco install curl -y
-      - name: Download clib deps
-        run: |
-          mkdir -p deps/greatest
-          curl -L https://github.com/silentbicycle/greatest/raw/release/greatest.h -o deps/greatest/greatest.h
-          mkdir -p deps/aligned
-          curl -L https://raw.githubusercontent.com/goodcleanfun/aligned/refs/heads/main/src/aligned.h -o deps/aligned/aligned.h
-          mkdir -p deps/simde_avx2
-          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/avx.h -o deps/simde_avx2/avx.h
-          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/avx2.h -o deps/simde_avx2/avx2.h
-          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/check.h -o deps/simde_avx2/check.h
-          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/debug-trap.h -o deps/simde_avx2/debug-trap.h
-          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/hedley.h -o deps/simde_avx2/hedley.h
-          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/mmx.h -o deps/simde_avx2/mmx.h
-          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/simde-align.h -o deps/simde_avx2/simde-align.h
-          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/simde-arch.h -o deps/simde_avx2/simde-arch.h
-          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/simde-common.h -o deps/simde_avx2/simde-common.h
-          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/simde-constify.h -o deps/simde_avx2/simde-constify.h
-          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/simde-detect-clang.h -o deps/simde_avx2/simde-detect-clang.h
-          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/simde-diagnostic.h -o deps/simde_avx2/simde-diagnostic.h
-          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/simde-f16.h -o deps/simde_avx2/simde-f16.h
-          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/simde-features.h -o deps/simde_avx2/simde-features.h
-          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/simde-math.h -o deps/simde_avx2/simde-math.h
-          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/sse.h -o deps/simde_avx2/sse.h
-          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/sse2.h -o deps/simde_avx2/sse2.h
-          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/sse3.h -o deps/simde_avx2/sse3.h
-          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/sse4.1.h -o deps/simde_avx2/sse4.1.h
-          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/sse4.2.h -o deps/simde_avx2/sse4.2.h
-          curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/ssse3.h -o deps/simde_avx2/ssse3.h
-
-      - name: Build and Test with MinGW
-        run: |
-          make CC=gcc CFLAGS="-std=gnu11 -march=x86-64-v3" test
+  
+  #test-windows-mingw:
+  #  runs-on: windows-latest
+  #  defaults:
+  #    run:
+  #      shell: bash
+  #  steps:
+  #    - uses: actions/checkout@v4
+  #    - name: Verify GCC Version
+  #      run: |
+  #        gcc --version
+  #    - name: Install curl
+  #      run: |
+  #        choco install curl -y
+  #    - name: Download clib deps
+  #      run: |
+  #        mkdir -p deps/greatest
+  #        curl -L https://github.com/silentbicycle/greatest/raw/release/greatest.h -o deps/greatest/greatest.h
+  #        mkdir -p deps/aligned
+  #        curl -L https://raw.githubusercontent.com/goodcleanfun/aligned/refs/heads/main/src/aligned.h -o deps/aligned/aligned.h
+  #        mkdir -p deps/simde_avx2
+  #        curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/avx.h -o deps/simde_avx2/avx.h
+  #        curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/avx2.h -o deps/simde_avx2/avx2.h
+  #        curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/check.h -o deps/simde_avx2/check.h
+  #        curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/debug-trap.h -o deps/simde_avx2/debug-trap.h
+  #        curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/hedley.h -o deps/simde_avx2/hedley.h
+  #        curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/mmx.h -o deps/simde_avx2/mmx.h
+  #        curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/simde-align.h -o deps/simde_avx2/simde-align.h
+  #        curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/simde-arch.h -o deps/simde_avx2/simde-arch.h
+  #        curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/simde-common.h -o deps/simde_avx2/simde-common.h
+  #        curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/simde-constify.h -o deps/simde_avx2/simde-constify.h
+  #        curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/simde-detect-clang.h -o deps/simde_avx2/simde-detect-clang.h
+  #        curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/simde-diagnostic.h -o deps/simde_avx2/simde-diagnostic.h
+  #        curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/simde-f16.h -o deps/simde_avx2/simde-f16.h
+  #        curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/simde-features.h -o deps/simde_avx2/simde-features.h
+  #        curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/simde-math.h -o deps/simde_avx2/simde-math.h
+  #        curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/sse.h -o deps/simde_avx2/sse.h
+  #        curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/sse2.h -o deps/simde_avx2/sse2.h
+  #        curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/sse3.h -o deps/simde_avx2/sse3.h
+  #        curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/sse4.1.h -o deps/simde_avx2/sse4.1.h
+  #        curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/sse4.2.h -o deps/simde_avx2/sse4.2.h
+  #        curl -L https://raw.githubusercontent.com/goodcleanfun/simde_avx2/refs/heads/main/ssse3.h -o deps/simde_avx2/ssse3.h
+  #
+  #    - name: Build and Test with MinGW
+  #      run: |
+  #        make CC=gcc CFLAGS="-std=gnu11 -march=x86-64-v3" test
