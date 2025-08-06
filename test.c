@@ -16,7 +16,7 @@ TEST test_latin1_to_utf8(void) {
     char *data = aligned_malloc(len, 32);
     memcpy(data, data_str, len);
     size_t utf8_output_len = len + 1;
-    char *utf8_output = aligned_malloc(utf8_output_len, 32);
+    char *utf8_output = aligned_malloc(utf8_output_len + 1, 32);
 
     utf_result_t converted = convert_latin1_to_utf8(data, len, utf8_output, utf8_output_len);
     ASSERT_EQ(converted.return_code, SIMDUTF_SUCCESS);
@@ -30,7 +30,7 @@ TEST test_latin1_to_utf8(void) {
     memcpy(data_long, data_str_long, len_long);
 
     size_t utf8_output_len_long = len_long + 4;
-    char *utf8_output_long = aligned_malloc(utf8_output_len_long, 32);
+    char *utf8_output_long = aligned_malloc(utf8_output_len_long + 1, 32);
 
     utf_result_t converted_long = convert_latin1_to_utf8(data_long, len_long, utf8_output_long, utf8_output_len_long);
     ASSERT_EQ(converted_long.return_code, SIMDUTF_SUCCESS);
