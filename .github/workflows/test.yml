@@ -143,4 +143,4 @@ jobs:
 
       - name: Build and Test with MinGW
         run: |
-          make CC=gcc CFLAGS="-std=c11 -march=native" test
+          make CC=gcc CFLAGS="-std=c11 -g -march=native" test
